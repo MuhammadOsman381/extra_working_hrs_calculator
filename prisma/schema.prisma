@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  passwordHash      String
+  dailyWorkingHours Int       @default(8)
+  workDays          WorkDay[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model WorkDay {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  startTime DateTime
+  endTime   DateTime?
+  breaks    Break[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model Break {
+  id        String   @id @default(cuid())
+  workDayId String
+  startTime DateTime
+  endTime   DateTime?
+  workDay   WorkDay  @relation(fields: [workDayId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workDayId])
+}
