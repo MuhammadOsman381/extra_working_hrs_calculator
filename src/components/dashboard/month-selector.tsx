@@ -25,10 +25,10 @@ export function MonthSelector({
 }) {
   return (
     <div className="inline-flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] p-1">
-      <Button type="button" variant="ghost" className="h-9 w-9 px-0" onClick={() => onChange(shiftMonth(month, -1))} aria-label="Previous month">
-        <ChevronLeft size={16} />
+      <Button type="button" variant="ghost" className="h-11 w-11 px-0" onClick={() => onChange(shiftMonth(month, -1))} aria-label="Previous month">
+        <ChevronLeft size={24} strokeWidth={1.7} />
       </Button>
-      <label className="relative grid h-9 min-w-44 place-items-center rounded-md px-3 text-sm font-semibold text-[var(--foreground)]">
+      <label className="relative grid h-11 min-w-44 place-items-center rounded-md px-3 text-sm font-semibold text-[var(--foreground)]">
         <span>{monthTitle(month)}</span>
         <input
           className="absolute inset-0 cursor-pointer opacity-0"
@@ -38,8 +38,8 @@ export function MonthSelector({
           aria-label="Select month"
         />
       </label>
-      <Button type="button" variant="ghost" className="h-9 w-9 px-0" onClick={() => onChange(shiftMonth(month, 1))} aria-label="Next month">
-        <ChevronRight size={16} />
+      <Button type="button" variant="ghost" className="h-11 w-11 px-0" onClick={() => onChange(shiftMonth(month, 1))} aria-label="Next month">
+        <ChevronRight size={24} strokeWidth={1.7} />
       </Button>
     </div>
   );

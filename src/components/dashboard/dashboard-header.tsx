@@ -28,8 +28,8 @@ export function DashboardHeader({
     <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--background)_88%,transparent)] backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--accent)] shadow-sm">
-            <Clock3 size={20} />
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--accent)] shadow-sm">
+            <Clock3 size={26} strokeWidth={1.7} />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -46,13 +46,13 @@ export function DashboardHeader({
           <Button
             type="button"
             variant="ghost"
-            className="h-10 w-10 px-0"
+            className="h-11 w-11 px-0"
             aria-label="Toggle theme"
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           >
-            {resolvedTheme === "dark" ? <Moon size={17} /> : <Sun size={17} />}
+            {resolvedTheme === "dark" ? <Moon size={24} strokeWidth={1.7} /> : <Sun size={24} strokeWidth={1.7} />}
           </Button>
-          <Button type="button" variant="secondary" className="h-10 px-3" onClick={onOpenSettings} icon={<Settings size={16} />}>
+          <Button type="button" variant="secondary" className="h-11 px-3" onClick={onOpenSettings} icon={<Settings size={24} strokeWidth={1.7} />}>
             <span className="hidden sm:inline">Settings</span>
           </Button>
           <div className="hidden items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1.5 sm:flex">
@@ -61,7 +61,7 @@ export function DashboardHeader({
             </span>
             <span className="max-w-28 truncate text-sm font-medium text-[var(--foreground)]">{user.name}</span>
           </div>
-          <Button variant="ghost" className="h-10 px-3" onClick={logout} disabled={loggingOut} icon={<LogOut size={16} />}>
+          <Button variant="ghost" className="h-11 px-3" onClick={logout} disabled={loggingOut} icon={<LogOut size={24} strokeWidth={1.7} />}>
             <span className="hidden sm:inline">{loggingOut ? "Logging out..." : "Logout"}</span>
           </Button>
         </div>

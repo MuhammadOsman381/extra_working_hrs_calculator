@@ -4,7 +4,7 @@ import { Plus, Save, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Field, Input } from "@/src/components/ui/input";
-import { calculateDailySummary, formatMinutes } from "@/src/features/work-days/calculations/time-calculations";
+import { calculateDailySummary, formatMinutes, type ExtraHoursSettings } from "@/src/features/work-days/calculations/time-calculations";
 import { requestJson } from "@/src/lib/client-api";
 import type { WorkDayRecord } from "@/src/features/work-days/types";
 
@@ -60,11 +60,13 @@ type DraftBreak = {
 export function WorkDayForm({
   record,
   normalWorkingHours,
+  extraHoursSettings,
   onCancel,
   onSaved,
 }: {
   record?: WorkDayRecord | null;
   normalWorkingHours: number;
+  extraHoursSettings: ExtraHoursSettings;
   onCancel?: () => void;
   onSaved: () => Promise<void>;
 }) {
@@ -93,9 +95,11 @@ export function WorkDayForm({
     try {
       const work = workDateTimes(date, startTime, endTime);
       return calculateDailySummary({
+        workDate: date,
         startTime: work.start,
         endTime: work.end,
         normalWorkingMinutes: normalWorkingHours * 60,
+        extraHoursSettings,
         breaks: breaks
           .filter((item) => item.startTime && item.endTime)
           .map((item) => {
@@ -106,7 +110,7 @@ export function WorkDayForm({
     } catch {
       return null;
     }
-  }, [breaks, date, endTime, normalWorkingHours, startTime]);
+  }, [breaks, date, endTime, extraHoursSettings, normalWorkingHours, startTime]);
 
   async function submit(formData: FormData) {
     setSaving(true);
@@ -142,19 +146,31 @@ export function WorkDayForm({
   }
 
   return (
-    <form action={submit} className="grid gap-5 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] sm:p-6">
-      <div className="flex items-center justify-between gap-3">
+    <form action={submit} className="theme-scrollbar group/card relative grid max-h-[calc(100dvh-2rem)] gap-6 overflow-y-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,transparent)] p-6 shadow-[var(--soft-shadow)] backdrop-blur-sm sm:p-7">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-60"
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition duration-500 group-hover/card:opacity-100"
+        style={{
+          background:
+            "linear-gradient(135deg, color-mix(in_srgb,var(--gradient-start)_26%,transparent), color-mix(in_srgb,var(--gradient-mid)_16%,transparent) 48%, color-mix(in_srgb,var(--gradient-end)_22%,transparent))",
+        }}
+      />
+      <div className="relative z-10 flex items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-[var(--foreground)]">{record ? "Edit record" : "Add record"}</h2>
           <p className="mt-1 text-sm text-[var(--muted)]">Choose the date once, then enter only times for work and breaks.</p>
         </div>
         {onCancel ? (
-          <Button type="button" variant="ghost" className="h-9 w-9 px-0" onClick={onCancel} aria-label="Close">
-            <X size={16} />
+          <Button type="button" variant="ghost" className="h-12 w-12 shrink-0 px-0" onClick={onCancel} aria-label="Close">
+            <X size={24} strokeWidth={1.7} />
           </Button>
         ) : null}
       </div>
-      <div className="grid gap-4 sm:grid-cols-[1.1fr_1fr_1fr]">
+      <div className="relative z-10 grid gap-4 sm:grid-cols-[1.1fr_1fr_1fr]">
         <Field label="Date">
           <Input name="date" type="date" required value={date} onChange={(event) => setDate(event.target.value)} />
         </Field>
@@ -178,21 +194,21 @@ export function WorkDayForm({
           />
         </Field>
       </div>
-      <div className="grid gap-3">
+      <div className="relative z-10 grid gap-3">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-[var(--foreground)]">Breaks</p>
           <Button
             type="button"
             variant="secondary"
-            className="h-9"
-            icon={<Plus size={16} />}
+            className="h-12 px-4"
+            icon={<Plus size={24} strokeWidth={1.7} />}
             onClick={() => setBreaks((items) => [...items, { tempId: crypto.randomUUID(), startTime: "", endTime: "" }])}
           >
             Add Break
           </Button>
         </div>
         {breaks.map((item, index) => (
-          <div className="grid gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] p-3 sm:grid-cols-[auto_1fr_1fr_auto]" key={item.tempId}>
+          <div className="grid gap-3 rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface-elevated)_88%,transparent)] p-3 shadow-[var(--shadow-card)] sm:grid-cols-[auto_1fr_1fr_auto]" key={item.tempId}>
             <div className="self-center text-sm font-semibold text-[var(--muted)]">Break {index + 1}</div>
             <Field label="Start">
               <Input
@@ -217,12 +233,12 @@ export function WorkDayForm({
               />
             </Field>
             <Button type="button" variant="ghost" className="h-11 w-11 px-0" onClick={() => setBreaks((items) => items.filter((breakItem) => breakItem.tempId !== item.tempId))} aria-label="Remove break">
-              <Trash2 size={16} />
+              <Trash2 size={24} strokeWidth={1.7} />
             </Button>
           </div>
         ))}
       </div>
-      <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] p-4">
+      <div className="relative z-10 rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface-elevated)_88%,transparent)] p-4 shadow-[var(--shadow-card)]">
         <p className="text-sm font-semibold text-[var(--foreground)]">Calculated Summary</p>
         <div className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
           {[
@@ -240,17 +256,17 @@ export function WorkDayForm({
         </div>
       </div>
       {error ? (
-        <p className="rounded-lg border border-[color-mix(in_srgb,var(--danger)_35%,transparent)] bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] px-3 py-2 text-sm font-medium text-[var(--danger)]">
+        <p className="relative z-10 rounded-2xl border border-[color-mix(in_srgb,var(--danger)_35%,transparent)] bg-[color-mix(in_srgb,var(--danger)_10%,transparent)] px-3 py-2 text-sm font-medium text-[var(--danger)]">
           {error}
         </p>
       ) : null}
-      <div className="flex justify-end gap-3">
+      <div className="relative z-10 flex justify-end gap-3">
         {onCancel ? (
           <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel
           </Button>
         ) : null}
-        <Button variant="accent" disabled={saving} icon={<Save size={16} />}>
+        <Button variant="accent" disabled={saving} icon={<Save size={24} strokeWidth={1.7} />}>
           {saving ? "Saving..." : "Save Record"}
         </Button>
       </div>

@@ -4,17 +4,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Coffee, LogOut, Play, Square, TimerReset } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/src/components/ui/button";
-import { calculateDailySummary, differenceInMinutes, formatMinutes } from "@/src/features/work-days/calculations/time-calculations";
+import { Card } from "@/src/components/ui/card";
+import { calculateDailySummary, differenceInMinutes, formatMinutes, type ExtraHoursSettings } from "@/src/features/work-days/calculations/time-calculations";
 import { requestJson } from "@/src/lib/client-api";
 import type { WorkDayRecord } from "@/src/features/work-days/types";
 
 export function WorkControls({
   today,
   normalWorkingHours,
+  extraHoursSettings,
   run,
 }: {
   today: WorkDayRecord | null;
   normalWorkingHours: number;
+  extraHoursSettings: ExtraHoursSettings;
   run: (label: string, task: () => Promise<unknown>) => Promise<void>;
 }) {
   const [action, setAction] = useState<string | null>(null);
@@ -36,12 +39,14 @@ export function WorkControls({
   const liveSummary = useMemo(() => {
     if (!today) return null;
     return calculateDailySummary({
+      workDate: today.date,
       startTime: today.startTime,
       endTime: today.endTime ?? now,
       normalWorkingMinutes: normalWorkingHours * 60,
+      extraHoursSettings,
       breaks: today.breaks.filter((item) => item.endTime),
     });
-  }, [normalWorkingHours, now, today]);
+  }, [extraHoursSettings, normalWorkingHours, now, today]);
 
   const dateLabel = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
@@ -62,7 +67,7 @@ export function WorkControls({
       detail: "Your workday has not started yet.",
       value: formatMinutes(normalWorkingHours * 60),
       valueLabel: "normal target",
-      icon: <TimerReset size={18} />,
+      icon: <TimerReset size={32} strokeWidth={1.7} />,
     },
     working: {
       eyebrow: "Working",
@@ -70,7 +75,7 @@ export function WorkControls({
       detail: "You are currently clocked in.",
       value: formatMinutes(liveSummary?.actualWorkingMinutes ?? 0),
       valueLabel: "worked",
-      icon: <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_24px_var(--accent)]" />,
+      icon: <span className="h-4 w-4 rounded-full bg-[var(--accent)] shadow-[0_0_24px_var(--accent)]" />,
     },
     break: {
       eyebrow: "On break",
@@ -78,7 +83,7 @@ export function WorkControls({
       detail: "The active break is paused from working time.",
       value: formatMinutes(breakMinutes),
       valueLabel: "on break",
-      icon: <Coffee size={18} />,
+      icon: <Coffee size={32} strokeWidth={1.7} />,
     },
     done: {
       eyebrow: "Day completed",
@@ -86,16 +91,15 @@ export function WorkControls({
       detail: "Your final totals are ready in work history.",
       value: liveSummary ? `+${formatMinutes(liveSummary.extraMinutes)}` : "+0h 0m",
       valueLabel: "extra",
-      icon: <CheckCircle2 size={18} />,
+      icon: <CheckCircle2 size={32} strokeWidth={1.7} />,
     },
   }[state];
 
   return (
-    <motion.section
+    <Card
+      as="section"
       layout
-      className={`relative overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] sm:p-6 ${
-        state === "working" ? "ring-1 ring-[var(--accent)]/30" : ""
-      }`}
+      className={`p-6 pt-8 sm:p-7 sm:pt-9 ${state === "working" ? "ring-1 ring-[var(--accent)]/30" : ""}`}
     >
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-70" />
       <AnimatePresence mode="wait">
@@ -109,7 +113,7 @@ export function WorkControls({
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-md bg-[var(--accent-soft)] text-[var(--accent)]">
+                <span className="grid h-14 w-14 place-items-center rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[var(--accent-soft)] via-[var(--surface)] to-[color-mix(in_srgb,var(--accent-2)_14%,transparent)] text-[var(--accent)] shadow-[var(--shadow-card)]">
                   {statusContent.icon}
                 </span>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{statusContent.eyebrow}</p>
@@ -118,7 +122,7 @@ export function WorkControls({
               <h2 className="mt-2 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl">{statusContent.title}</h2>
               <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)]">{statusContent.detail}</p>
             </div>
-            <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] p-4 text-left lg:min-w-56">
+            <div className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface-elevated)_88%,transparent)] p-4 text-left shadow-[var(--shadow-card)] lg:min-w-56">
               <p className="text-4xl font-semibold text-[var(--foreground)]">{statusContent.value}</p>
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-[var(--subtle)]">{statusContent.valueLabel}</p>
               {liveSummary && state !== "idle" ? (
@@ -141,7 +145,7 @@ export function WorkControls({
                 variant="accent"
                 className="h-12 px-6"
                 disabled={action !== null}
-                icon={<Play size={17} />}
+                icon={<Play size={24} strokeWidth={1.7} />}
                 onClick={() => execute("start", `Work started at ${new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}.`, () => requestJson("/api/work-days", { method: "POST" }))}
               >
                 {action === "start" ? "Starting..." : "Start Work"}
@@ -152,7 +156,7 @@ export function WorkControls({
                 <Button
                   variant="secondary"
                   disabled={action !== null}
-                  icon={<Coffee size={16} />}
+                  icon={<Coffee size={24} strokeWidth={1.7} />}
                   onClick={() => execute("break-start", "Break started.", () => requestJson(`/api/work-days/${today.id}/breaks/start`, { method: "POST" }))}
                 >
                   {action === "break-start" ? "Starting break..." : "Start Break"}
@@ -160,7 +164,7 @@ export function WorkControls({
                 <Button
                   variant="danger"
                   disabled={action !== null}
-                  icon={<Square size={16} />}
+                  icon={<Square size={24} strokeWidth={1.7} />}
                   onClick={() => execute("end", `Workday completed${liveSummary ? ` - +${formatMinutes(liveSummary.extraMinutes)} extra` : ""}.`, () => requestJson(`/api/work-days/${today.id}?mode=end`, { method: "PATCH", body: "{}" }))}
                 >
                   {action === "end" ? "Ending..." : "End Work"}
@@ -171,7 +175,7 @@ export function WorkControls({
               <Button
                 variant="accent"
                 disabled={action !== null}
-                icon={<LogOut size={16} />}
+                icon={<LogOut size={24} strokeWidth={1.7} />}
                 onClick={() => execute("break-end", "Break ended.", () => requestJson(`/api/work-days/${today.id}/breaks/end`, { method: "POST" }))}
               >
                 {action === "break-end" ? "Ending break..." : "End Break"}
@@ -180,6 +184,6 @@ export function WorkControls({
           </div>
         </motion.div>
       </AnimatePresence>
-    </motion.section>
+    </Card>
   );
 }

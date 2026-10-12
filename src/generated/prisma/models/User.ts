@@ -40,6 +40,12 @@ export type UserMinAggregateOutputType = {
   email: string | null
   passwordHash: string | null
   dailyWorkingHours: number | null
+  theme: string | null
+  palette: string | null
+  countSaturdayAsExtraHours: boolean | null
+  countSaturdayAsDoubleExtraHours: boolean | null
+  countSundayAsExtraHours: boolean | null
+  countSundayAsDoubleExtraHours: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +56,12 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   passwordHash: string | null
   dailyWorkingHours: number | null
+  theme: string | null
+  palette: string | null
+  countSaturdayAsExtraHours: boolean | null
+  countSaturdayAsDoubleExtraHours: boolean | null
+  countSundayAsExtraHours: boolean | null
+  countSundayAsDoubleExtraHours: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +72,12 @@ export type UserCountAggregateOutputType = {
   email: number
   passwordHash: number
   dailyWorkingHours: number
+  theme: number
+  palette: number
+  countSaturdayAsExtraHours: number
+  countSaturdayAsDoubleExtraHours: number
+  countSundayAsExtraHours: number
+  countSundayAsDoubleExtraHours: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,6 +98,12 @@ export type UserMinAggregateInputType = {
   email?: true
   passwordHash?: true
   dailyWorkingHours?: true
+  theme?: true
+  palette?: true
+  countSaturdayAsExtraHours?: true
+  countSaturdayAsDoubleExtraHours?: true
+  countSundayAsExtraHours?: true
+  countSundayAsDoubleExtraHours?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,6 +114,12 @@ export type UserMaxAggregateInputType = {
   email?: true
   passwordHash?: true
   dailyWorkingHours?: true
+  theme?: true
+  palette?: true
+  countSaturdayAsExtraHours?: true
+  countSaturdayAsDoubleExtraHours?: true
+  countSundayAsExtraHours?: true
+  countSundayAsDoubleExtraHours?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +130,12 @@ export type UserCountAggregateInputType = {
   email?: true
   passwordHash?: true
   dailyWorkingHours?: true
+  theme?: true
+  palette?: true
+  countSaturdayAsExtraHours?: true
+  countSaturdayAsDoubleExtraHours?: true
+  countSundayAsExtraHours?: true
+  countSundayAsDoubleExtraHours?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -197,6 +233,12 @@ export type UserGroupByOutputType = {
   email: string
   passwordHash: string
   dailyWorkingHours: number
+  theme: string
+  palette: string
+  countSaturdayAsExtraHours: boolean
+  countSaturdayAsDoubleExtraHours: boolean
+  countSundayAsExtraHours: boolean
+  countSundayAsDoubleExtraHours: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -230,6 +272,12 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
   dailyWorkingHours?: Prisma.IntFilter<"User"> | number
+  theme?: Prisma.StringFilter<"User"> | string
+  palette?: Prisma.StringFilter<"User"> | string
+  countSaturdayAsExtraHours?: Prisma.BoolFilter<"User"> | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFilter<"User"> | boolean
+  countSundayAsExtraHours?: Prisma.BoolFilter<"User"> | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   workDays?: Prisma.WorkDayListRelationFilter
@@ -241,6 +289,12 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   dailyWorkingHours?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  palette?: Prisma.SortOrder
+  countSaturdayAsExtraHours?: Prisma.SortOrder
+  countSaturdayAsDoubleExtraHours?: Prisma.SortOrder
+  countSundayAsExtraHours?: Prisma.SortOrder
+  countSundayAsDoubleExtraHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   workDays?: Prisma.WorkDayOrderByRelationAggregateInput
@@ -255,6 +309,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
   dailyWorkingHours?: Prisma.IntFilter<"User"> | number
+  theme?: Prisma.StringFilter<"User"> | string
+  palette?: Prisma.StringFilter<"User"> | string
+  countSaturdayAsExtraHours?: Prisma.BoolFilter<"User"> | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFilter<"User"> | boolean
+  countSundayAsExtraHours?: Prisma.BoolFilter<"User"> | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   workDays?: Prisma.WorkDayListRelationFilter
@@ -266,6 +326,12 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   dailyWorkingHours?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  palette?: Prisma.SortOrder
+  countSaturdayAsExtraHours?: Prisma.SortOrder
+  countSaturdayAsDoubleExtraHours?: Prisma.SortOrder
+  countSundayAsExtraHours?: Prisma.SortOrder
+  countSundayAsDoubleExtraHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -284,6 +350,12 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   dailyWorkingHours?: Prisma.IntWithAggregatesFilter<"User"> | number
+  theme?: Prisma.StringWithAggregatesFilter<"User"> | string
+  palette?: Prisma.StringWithAggregatesFilter<"User"> | string
+  countSaturdayAsExtraHours?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  countSundayAsExtraHours?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -294,6 +366,12 @@ export type UserCreateInput = {
   email: string
   passwordHash: string
   dailyWorkingHours?: number
+  theme?: string
+  palette?: string
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   workDays?: Prisma.WorkDayCreateNestedManyWithoutUserInput
@@ -305,6 +383,12 @@ export type UserUncheckedCreateInput = {
   email: string
   passwordHash: string
   dailyWorkingHours?: number
+  theme?: string
+  palette?: string
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   workDays?: Prisma.WorkDayUncheckedCreateNestedManyWithoutUserInput
@@ -316,6 +400,12 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   dailyWorkingHours?: Prisma.IntFieldUpdateOperationsInput | number
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  palette?: Prisma.StringFieldUpdateOperationsInput | string
+  countSaturdayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workDays?: Prisma.WorkDayUpdateManyWithoutUserNestedInput
@@ -327,6 +417,12 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   dailyWorkingHours?: Prisma.IntFieldUpdateOperationsInput | number
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  palette?: Prisma.StringFieldUpdateOperationsInput | string
+  countSaturdayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workDays?: Prisma.WorkDayUncheckedUpdateManyWithoutUserNestedInput
@@ -338,6 +434,12 @@ export type UserCreateManyInput = {
   email: string
   passwordHash: string
   dailyWorkingHours?: number
+  theme?: string
+  palette?: string
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -348,6 +450,12 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   dailyWorkingHours?: Prisma.IntFieldUpdateOperationsInput | number
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  palette?: Prisma.StringFieldUpdateOperationsInput | string
+  countSaturdayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -358,6 +466,12 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   dailyWorkingHours?: Prisma.IntFieldUpdateOperationsInput | number
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  palette?: Prisma.StringFieldUpdateOperationsInput | string
+  countSaturdayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -368,6 +482,12 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   dailyWorkingHours?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  palette?: Prisma.SortOrder
+  countSaturdayAsExtraHours?: Prisma.SortOrder
+  countSaturdayAsDoubleExtraHours?: Prisma.SortOrder
+  countSundayAsExtraHours?: Prisma.SortOrder
+  countSundayAsDoubleExtraHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -382,6 +502,12 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   dailyWorkingHours?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  palette?: Prisma.SortOrder
+  countSaturdayAsExtraHours?: Prisma.SortOrder
+  countSaturdayAsDoubleExtraHours?: Prisma.SortOrder
+  countSundayAsExtraHours?: Prisma.SortOrder
+  countSundayAsDoubleExtraHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -392,6 +518,12 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   dailyWorkingHours?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+  palette?: Prisma.SortOrder
+  countSaturdayAsExtraHours?: Prisma.SortOrder
+  countSaturdayAsDoubleExtraHours?: Prisma.SortOrder
+  countSundayAsExtraHours?: Prisma.SortOrder
+  countSundayAsDoubleExtraHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -415,6 +547,10 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -441,6 +577,12 @@ export type UserCreateWithoutWorkDaysInput = {
   email: string
   passwordHash: string
   dailyWorkingHours?: number
+  theme?: string
+  palette?: string
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -451,6 +593,12 @@ export type UserUncheckedCreateWithoutWorkDaysInput = {
   email: string
   passwordHash: string
   dailyWorkingHours?: number
+  theme?: string
+  palette?: string
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -477,6 +625,12 @@ export type UserUpdateWithoutWorkDaysInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   dailyWorkingHours?: Prisma.IntFieldUpdateOperationsInput | number
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  palette?: Prisma.StringFieldUpdateOperationsInput | string
+  countSaturdayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -487,6 +641,12 @@ export type UserUncheckedUpdateWithoutWorkDaysInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   dailyWorkingHours?: Prisma.IntFieldUpdateOperationsInput | number
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
+  palette?: Prisma.StringFieldUpdateOperationsInput | string
+  countSaturdayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSaturdayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countSundayAsDoubleExtraHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -528,6 +688,12 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   passwordHash?: boolean
   dailyWorkingHours?: boolean
+  theme?: boolean
+  palette?: boolean
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workDays?: boolean | Prisma.User$workDaysArgs<ExtArgs>
@@ -540,6 +706,12 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   passwordHash?: boolean
   dailyWorkingHours?: boolean
+  theme?: boolean
+  palette?: boolean
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -550,6 +722,12 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   passwordHash?: boolean
   dailyWorkingHours?: boolean
+  theme?: boolean
+  palette?: boolean
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -560,11 +738,17 @@ export type UserSelectScalar = {
   email?: boolean
   passwordHash?: boolean
   dailyWorkingHours?: boolean
+  theme?: boolean
+  palette?: boolean
+  countSaturdayAsExtraHours?: boolean
+  countSaturdayAsDoubleExtraHours?: boolean
+  countSundayAsExtraHours?: boolean
+  countSundayAsDoubleExtraHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "dailyWorkingHours" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "dailyWorkingHours" | "theme" | "palette" | "countSaturdayAsExtraHours" | "countSaturdayAsDoubleExtraHours" | "countSundayAsExtraHours" | "countSundayAsDoubleExtraHours" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workDays?: boolean | Prisma.User$workDaysArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -583,6 +767,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     passwordHash: string
     dailyWorkingHours: number
+    theme: string
+    palette: string
+    countSaturdayAsExtraHours: boolean
+    countSaturdayAsDoubleExtraHours: boolean
+    countSundayAsExtraHours: boolean
+    countSundayAsDoubleExtraHours: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1014,6 +1204,12 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly dailyWorkingHours: Prisma.FieldRef<"User", 'Int'>
+  readonly theme: Prisma.FieldRef<"User", 'String'>
+  readonly palette: Prisma.FieldRef<"User", 'String'>
+  readonly countSaturdayAsExtraHours: Prisma.FieldRef<"User", 'Boolean'>
+  readonly countSaturdayAsDoubleExtraHours: Prisma.FieldRef<"User", 'Boolean'>
+  readonly countSundayAsExtraHours: Prisma.FieldRef<"User", 'Boolean'>
+  readonly countSundayAsDoubleExtraHours: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

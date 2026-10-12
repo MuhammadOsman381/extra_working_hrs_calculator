@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/src/lib/prisma";
 import { AppError } from "@/src/lib/api";
+import { defaultPalette, isPaletteId, isThemeMode } from "@/src/lib/palettes";
 import { loginSchema, registerSchema, settingsSchema } from "../schemas/auth-schemas";
 
 const SESSION_COOKIE = "extra_hours_session";
@@ -15,6 +16,27 @@ type SessionPayload = {
   email: string;
   exp: number;
 };
+
+const userSelect = {
+  id: true,
+  name: true,
+  email: true,
+  dailyWorkingHours: true,
+  theme: true,
+  palette: true,
+  countSaturdayAsExtraHours: true,
+  countSaturdayAsDoubleExtraHours: true,
+  countSundayAsExtraHours: true,
+  countSundayAsDoubleExtraHours: true,
+} as const;
+
+function normalizeUser<T extends { theme: string; palette: string }>(user: T) {
+  return {
+    ...user,
+    theme: isThemeMode(user.theme) ? user.theme : "dark",
+    palette: isPaletteId(user.palette) ? user.palette : defaultPalette,
+  };
+}
 
 function getAuthSecret() {
   const secret = process.env.AUTH_SECRET;
@@ -88,14 +110,14 @@ export async function requireUser() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
-    select: { id: true, name: true, email: true, dailyWorkingHours: true },
+    select: userSelect,
   });
 
   if (!user) {
     throw new AppError("UNAUTHORIZED", "Please log in to continue.", 401);
   }
 
-  return user;
+  return normalizeUser(user);
 }
 
 export async function registerUser(input: unknown) {
@@ -113,11 +135,11 @@ export async function registerUser(input: unknown) {
       passwordHash,
       dailyWorkingHours: data.dailyWorkingHours,
     },
-    select: { id: true, name: true, email: true, dailyWorkingHours: true },
+    select: userSelect,
   });
 
   await setSession(user);
-  return user;
+  return normalizeUser(user);
 }
 
 export async function loginUser(input: unknown) {
@@ -128,19 +150,34 @@ export async function loginUser(input: unknown) {
   }
 
   await setSession(user);
-  return {
+  return normalizeUser({
     id: user.id,
     name: user.name,
     email: user.email,
     dailyWorkingHours: user.dailyWorkingHours,
-  };
+    theme: user.theme,
+    palette: user.palette,
+    countSaturdayAsExtraHours: user.countSaturdayAsExtraHours,
+    countSaturdayAsDoubleExtraHours: user.countSaturdayAsDoubleExtraHours,
+    countSundayAsExtraHours: user.countSundayAsExtraHours,
+    countSundayAsDoubleExtraHours: user.countSundayAsDoubleExtraHours,
+  });
 }
 
 export async function updateSettings(userId: string, input: unknown) {
   const data = settingsSchema.parse(input);
-  return prisma.user.update({
+  const user = await prisma.user.update({
     where: { id: userId },
-    data: { dailyWorkingHours: data.dailyWorkingHours },
-    select: { id: true, name: true, email: true, dailyWorkingHours: true },
+    data: {
+      ...(data.dailyWorkingHours === undefined ? {} : { dailyWorkingHours: data.dailyWorkingHours }),
+      ...(data.theme === undefined ? {} : { theme: data.theme }),
+      ...(data.palette === undefined ? {} : { palette: data.palette }),
+      ...(data.countSaturdayAsExtraHours === undefined ? {} : { countSaturdayAsExtraHours: data.countSaturdayAsExtraHours }),
+      ...(data.countSaturdayAsDoubleExtraHours === undefined ? {} : { countSaturdayAsDoubleExtraHours: data.countSaturdayAsDoubleExtraHours }),
+      ...(data.countSundayAsExtraHours === undefined ? {} : { countSundayAsExtraHours: data.countSundayAsExtraHours }),
+      ...(data.countSundayAsDoubleExtraHours === undefined ? {} : { countSundayAsDoubleExtraHours: data.countSundayAsDoubleExtraHours }),
+    },
+    select: userSelect,
   });
+  return normalizeUser(user);
 }

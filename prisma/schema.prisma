@@ -13,6 +13,12 @@ model User {
   email             String    @unique
   passwordHash      String
   dailyWorkingHours Int       @default(8)
+  theme             String    @default("dark")
+  palette           String    @default("electric-violet")
+  countSaturdayAsExtraHours       Boolean   @default(false)
+  countSaturdayAsDoubleExtraHours Boolean   @default(false)
+  countSundayAsExtraHours         Boolean   @default(false)
+  countSundayAsDoubleExtraHours   Boolean   @default(false)
   workDays          WorkDay[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt

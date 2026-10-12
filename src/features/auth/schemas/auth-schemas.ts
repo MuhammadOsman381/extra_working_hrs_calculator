@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { paletteIds, themeModes } from "@/src/lib/palettes";
 
 export const registerSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters."),
@@ -13,5 +14,11 @@ export const loginSchema = z.object({
 });
 
 export const settingsSchema = z.object({
-  dailyWorkingHours: z.coerce.number().min(1, "Daily hours must be greater than zero.").max(24),
+  dailyWorkingHours: z.coerce.number().min(1, "Daily hours must be greater than zero.").max(24).optional(),
+  theme: z.enum(themeModes).optional(),
+  palette: z.enum(paletteIds).optional(),
+  countSaturdayAsExtraHours: z.coerce.boolean().optional(),
+  countSaturdayAsDoubleExtraHours: z.coerce.boolean().optional(),
+  countSundayAsExtraHours: z.coerce.boolean().optional(),
+  countSundayAsDoubleExtraHours: z.coerce.boolean().optional(),
 });

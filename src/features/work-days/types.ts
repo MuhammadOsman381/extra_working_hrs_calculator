@@ -37,4 +37,10 @@ export type AppUser = {
   name: string;
   email: string;
   dailyWorkingHours: number;
+  theme: import("@/src/lib/palettes").ThemeMode;
+  palette: import("@/src/lib/palettes").PaletteId;
+  countSaturdayAsExtraHours: boolean;
+  countSaturdayAsDoubleExtraHours: boolean;
+  countSundayAsExtraHours: boolean;
+  countSundayAsDoubleExtraHours: boolean;
 };

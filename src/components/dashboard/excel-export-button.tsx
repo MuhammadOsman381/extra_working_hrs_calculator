@@ -14,7 +14,7 @@ export function ExcelExportButton({ month }: { month: string }) {
   }
 
   return (
-    <Button variant="ghost" className="h-10 px-3" onClick={download} disabled={exporting} icon={<Download size={16} />}>
+    <Button variant="ghost" className="h-12 px-4" onClick={download} disabled={exporting} icon={<Download size={24} strokeWidth={1.7} />}>
       {exporting ? "Exporting..." : "Export Excel"}
     </Button>
   );

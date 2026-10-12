@@ -1,9 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { MoreHorizontal, Pencil, Plus, TimerReset, Trash2 } from "lucide-react";
+import { Pencil, Plus, TimerReset, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/src/components/ui/button";
+import { Card } from "@/src/components/ui/card";
 import { requestJson } from "@/src/lib/client-api";
 import type { WorkDayRecord } from "@/src/features/work-days/types";
 
@@ -15,7 +16,7 @@ function shortDate(value: string) {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit" }).format(new Date(`${value}T00:00:00`));
 }
 
-function RowMenu({
+function RowActions({
   record,
   onEdit,
   onDelete,
@@ -26,52 +27,27 @@ function RowMenu({
   onDelete: (record: WorkDayRecord) => void;
   deleting: boolean;
 }) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <div className="relative flex justify-end">
+    <div className="flex flex-wrap justify-end gap-2">
       <Button
-        className="h-9 w-9 px-0"
-        variant="ghost"
-        onClick={() => setOpen((value) => !value)}
-        aria-label="Open record actions"
+        type="button"
+        variant="secondary"
+        className="h-11 px-4"
+        icon={<Pencil size={24} strokeWidth={1.7} />}
+        onClick={() => onEdit(record)}
       >
-        <MoreHorizontal size={16} />
+        Edit
       </Button>
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            className="absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] p-1 shadow-[var(--shadow)]"
-          >
-            <button
-              type="button"
-              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] hover:bg-[var(--surface-muted)]"
-              onClick={() => {
-                setOpen(false);
-                onEdit(record);
-              }}
-            >
-              <Pencil size={15} />
-              Edit record
-            </button>
-            <button
-              type="button"
-              disabled={deleting}
-              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-[var(--danger)] hover:bg-[var(--surface-muted)] disabled:opacity-50"
-              onClick={() => {
-                setOpen(false);
-                onDelete(record);
-              }}
-            >
-              <Trash2 size={15} />
-              Delete record
-            </button>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-11 px-4 text-[var(--danger)] hover:text-[var(--danger)]"
+        icon={<Trash2 size={24} strokeWidth={1.7} />}
+        disabled={deleting}
+        onClick={() => onDelete(record)}
+      >
+        {deleting ? "Deleting..." : "Delete"}
+      </Button>
     </div>
   );
 }
@@ -103,7 +79,7 @@ function DeleteDialog({
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 14 }}
-            className="w-full max-w-sm rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)]"
+            className="w-full max-w-sm rounded-3xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] p-5 shadow-[var(--soft-shadow)]"
           >
             <h2 id="delete-record-title" className="text-lg font-semibold text-[var(--foreground)]">
               Delete record?
@@ -154,14 +130,14 @@ export function WorkDayTable({
   }
 
   if (loading) {
-    return <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-8 text-center text-sm font-medium text-[var(--muted)]">Loading records...</div>;
+    return <Card className="p-8 text-center text-sm font-medium text-[var(--muted)]" interactive={false}>Loading records...</Card>;
   }
 
   if (!days.length) {
     return (
-      <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-sm">
-        <div className="mx-auto grid h-12 w-12 place-items-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent)]">
-          <TimerReset size={24} />
+      <Card className="p-8 text-center">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[var(--accent-soft)] via-[var(--surface)] to-[color-mix(in_srgb,var(--accent-2)_14%,transparent)] text-[var(--accent)] shadow-[var(--shadow-card)]">
+          <TimerReset size={32} strokeWidth={1.8} />
         </div>
         <h3 className="mt-4 text-lg font-semibold text-[var(--foreground)]">No work records</h3>
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">
@@ -171,17 +147,17 @@ export function WorkDayTable({
           <Button variant="accent" onClick={onStartWork}>
             Start Work
           </Button>
-          <Button variant="secondary" icon={<Plus size={16} />} onClick={onAdd}>
+          <Button variant="secondary" icon={<Plus size={22} strokeWidth={1.7} />} onClick={onAdd}>
             Add Record
           </Button>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
     <>
-      <div className="hidden overflow-visible rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-sm md:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,transparent)] shadow-[var(--shadow-card)] md:block">
         <table className="w-full text-left text-sm">
           <thead className="text-xs uppercase tracking-[0.16em] text-[var(--subtle)]">
             <tr>
@@ -200,7 +176,7 @@ export function WorkDayTable({
                 key={day.id}
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-[var(--muted)] transition hover:bg-[var(--surface-elevated)]"
+                className="text-[var(--muted)] transition hover:bg-[color-mix(in_srgb,var(--gradient-start)_12%,var(--surface-elevated))]"
               >
                 <td className="px-4 py-4 font-semibold text-[var(--foreground)]">{shortDate(day.date)}</td>
                 <td className="px-4 py-4">{time(day.startTime)}</td>
@@ -209,7 +185,7 @@ export function WorkDayTable({
                 <td className="px-4 py-4 font-semibold text-[var(--foreground)]">{day.summary.actualWorking}</td>
                 <td className="px-4 py-4 font-semibold text-[var(--accent)]">+{day.summary.extra}</td>
                 <td className="px-4 py-4">
-                  <RowMenu record={day} onEdit={onEdit} onDelete={setPendingDelete} deleting={deleting === day.id} />
+                  <RowActions record={day} onEdit={onEdit} onDelete={setPendingDelete} deleting={deleting === day.id} />
                 </td>
               </motion.tr>
             ))}
@@ -219,11 +195,12 @@ export function WorkDayTable({
 
       <div className="grid gap-3 md:hidden">
         {days.map((day) => (
-          <motion.article
+          <Card
+            as="article"
             key={day.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm"
+            className="p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -232,7 +209,7 @@ export function WorkDayTable({
                   {time(day.startTime)} to {time(day.endTime)}
                 </p>
               </div>
-              <RowMenu record={day} onEdit={onEdit} onDelete={setPendingDelete} deleting={deleting === day.id} />
+              <RowActions record={day} onEdit={onEdit} onDelete={setPendingDelete} deleting={deleting === day.id} />
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
               <div>
@@ -248,7 +225,7 @@ export function WorkDayTable({
                 <p className="mt-1 font-semibold text-[var(--accent)]">+{day.summary.extra}</p>
               </div>
             </div>
-          </motion.article>
+          </Card>
         ))}
       </div>
       <DeleteDialog

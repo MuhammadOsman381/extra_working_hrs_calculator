@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { ThemeProvider } from "@/src/components/theme/theme-provider";
+import { defaultPalette, paletteStorageKey, palettes } from "@/src/lib/palettes";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,12 +26,13 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html
       lang="en"
       data-theme="dark"
+      data-palette={defaultPalette}
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         <Script id="theme-init" strategy="beforeInteractive">
-          {`(() => { try { const t = localStorage.getItem("extra-hours-theme") || "dark"; const r = t === "system" ? (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : t; document.documentElement.dataset.theme = r; } catch { document.documentElement.dataset.theme = "dark"; } })();`}
+          {`(() => { try { const t = localStorage.getItem("extra-hours-theme") || "dark"; const r = t === "system" ? (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : t; const key = ${JSON.stringify(paletteStorageKey)}; const fallback = ${JSON.stringify(defaultPalette)}; const valid = ${JSON.stringify(palettes.map((item) => item.id))}; const p = localStorage.getItem(key); document.documentElement.dataset.theme = r; document.documentElement.dataset.palette = valid.includes(p) ? p : fallback; } catch { document.documentElement.dataset.theme = "dark"; document.documentElement.dataset.palette = ${JSON.stringify(defaultPalette)}; } })();`}
         </Script>
         <ThemeProvider>{children}</ThemeProvider>
       </body>

@@ -8,14 +8,25 @@ export async function getMonthlyStatistics(userId: string, month: string) {
   const { start, end } = monthRange(month);
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { dailyWorkingHours: true },
+    select: {
+      dailyWorkingHours: true,
+      countSaturdayAsExtraHours: true,
+      countSaturdayAsDoubleExtraHours: true,
+      countSundayAsExtraHours: true,
+      countSundayAsDoubleExtraHours: true,
+    },
   });
   const days = await prisma.workDay.findMany({
     where: { userId, date: { gte: start, lt: end } },
     include: { breaks: true },
   });
 
-  const totals = calculateMonthlySummary(days, user.dailyWorkingHours * 60);
+  const totals = calculateMonthlySummary(days, user.dailyWorkingHours * 60, {
+    countSaturdayAsExtraHours: user.countSaturdayAsExtraHours,
+    countSaturdayAsDoubleExtraHours: user.countSaturdayAsDoubleExtraHours,
+    countSundayAsExtraHours: user.countSundayAsExtraHours,
+    countSundayAsDoubleExtraHours: user.countSundayAsDoubleExtraHours,
+  });
   return {
     ...totals,
     working: formatMinutes(totals.workingMinutes),

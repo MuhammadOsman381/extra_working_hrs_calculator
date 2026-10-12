@@ -3,7 +3,7 @@ import "server-only";
 import { AppError } from "@/src/lib/api";
 import { dateOnly, monthRange, todayDateOnly } from "@/src/lib/date";
 import { prisma } from "@/src/lib/prisma";
-import { calculateDailySummary, formatMinutes } from "../calculations/time-calculations";
+import { calculateDailySummary, formatMinutes, type ExtraHoursSettings } from "../calculations/time-calculations";
 import { manualWorkDaySchema } from "../schemas/work-day-schemas";
 
 const workDayInclude = {
@@ -22,12 +22,14 @@ type WorkDayWithBreaks = {
   }>;
 };
 
-function serializeWorkDay(day: WorkDayWithBreaks, normalWorkingMinutes: number) {
+function serializeWorkDay(day: WorkDayWithBreaks, normalWorkingMinutes: number, extraHoursSettings: ExtraHoursSettings) {
   const summary = calculateDailySummary({
+    workDate: day.date,
     startTime: day.startTime,
     endTime: day.endTime,
     breaks: day.breaks,
     normalWorkingMinutes,
+    extraHoursSettings,
   });
 
   return {
@@ -50,33 +52,47 @@ function serializeWorkDay(day: WorkDayWithBreaks, normalWorkingMinutes: number) 
   };
 }
 
-async function getUserNormalMinutes(userId: string) {
+async function getUserTimeSettings(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { dailyWorkingHours: true },
+    select: {
+      dailyWorkingHours: true,
+      countSaturdayAsExtraHours: true,
+      countSaturdayAsDoubleExtraHours: true,
+      countSundayAsExtraHours: true,
+      countSundayAsDoubleExtraHours: true,
+    },
   });
-  return (user?.dailyWorkingHours ?? 8) * 60;
+  return {
+    normalWorkingMinutes: (user?.dailyWorkingHours ?? 8) * 60,
+    extraHoursSettings: {
+      countSaturdayAsExtraHours: user?.countSaturdayAsExtraHours ?? false,
+      countSaturdayAsDoubleExtraHours: user?.countSaturdayAsDoubleExtraHours ?? false,
+      countSundayAsExtraHours: user?.countSundayAsExtraHours ?? false,
+      countSundayAsDoubleExtraHours: user?.countSundayAsDoubleExtraHours ?? false,
+    },
+  };
 }
 
 export async function getWorkDays(userId: string, month: string) {
   const { start, end } = monthRange(month);
-  const normalWorkingMinutes = await getUserNormalMinutes(userId);
+  const { normalWorkingMinutes, extraHoursSettings } = await getUserTimeSettings(userId);
   const days = await prisma.workDay.findMany({
     where: { userId, date: { gte: start, lt: end } },
     include: workDayInclude,
     orderBy: { date: "desc" },
   });
 
-  return days.map((day) => serializeWorkDay(day, normalWorkingMinutes));
+  return days.map((day) => serializeWorkDay(day, normalWorkingMinutes, extraHoursSettings));
 }
 
 export async function getTodayWorkDay(userId: string) {
-  const normalWorkingMinutes = await getUserNormalMinutes(userId);
+  const { normalWorkingMinutes, extraHoursSettings } = await getUserTimeSettings(userId);
   const day = await prisma.workDay.findUnique({
     where: { userId_date: { userId, date: todayDateOnly() } },
     include: workDayInclude,
   });
-  return day ? serializeWorkDay(day, normalWorkingMinutes) : null;
+  return day ? serializeWorkDay(day, normalWorkingMinutes, extraHoursSettings) : null;
 }
 
 export async function startWorkDay(userId: string) {
@@ -91,7 +107,8 @@ export async function startWorkDay(userId: string) {
     data: { userId, date: todayDateOnly(), startTime: new Date() },
     include: workDayInclude,
   });
-  return serializeWorkDay(day, await getUserNormalMinutes(userId));
+  const { normalWorkingMinutes, extraHoursSettings } = await getUserTimeSettings(userId);
+  return serializeWorkDay(day, normalWorkingMinutes, extraHoursSettings);
 }
 
 export async function endWorkDay(userId: string, id: string) {
@@ -107,7 +124,8 @@ export async function endWorkDay(userId: string, id: string) {
     data: { endTime: new Date() },
     include: workDayInclude,
   });
-  return serializeWorkDay(updated, await getUserNormalMinutes(userId));
+  const { normalWorkingMinutes, extraHoursSettings } = await getUserTimeSettings(userId);
+  return serializeWorkDay(updated, normalWorkingMinutes, extraHoursSettings);
 }
 
 export async function upsertManualWorkDay(userId: string, input: unknown, id?: string) {
@@ -155,7 +173,8 @@ export async function upsertManualWorkDay(userId: string, input: unknown, id?: s
     return tx.workDay.findUniqueOrThrow({ where: { id: day.id }, include: workDayInclude });
   });
 
-  return serializeWorkDay(saved, await getUserNormalMinutes(userId));
+  const { normalWorkingMinutes, extraHoursSettings } = await getUserTimeSettings(userId);
+  return serializeWorkDay(saved, normalWorkingMinutes, extraHoursSettings);
 }
 
 export async function deleteWorkDay(userId: string, id: string) {

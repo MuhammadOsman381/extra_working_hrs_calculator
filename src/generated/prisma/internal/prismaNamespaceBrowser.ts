@@ -78,6 +78,12 @@ export const UserScalarFieldEnum = {
   email: 'email',
   passwordHash: 'passwordHash',
   dailyWorkingHours: 'dailyWorkingHours',
+  theme: 'theme',
+  palette: 'palette',
+  countSaturdayAsExtraHours: 'countSaturdayAsExtraHours',
+  countSaturdayAsDoubleExtraHours: 'countSaturdayAsDoubleExtraHours',
+  countSundayAsExtraHours: 'countSundayAsExtraHours',
+  countSundayAsDoubleExtraHours: 'countSundayAsDoubleExtraHours',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

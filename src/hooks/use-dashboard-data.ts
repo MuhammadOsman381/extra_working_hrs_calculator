@@ -4,6 +4,17 @@ import { useCallback, useEffect, useState } from "react";
 import { requestJson } from "@/src/lib/client-api";
 import type { AppUser, MonthlyStatistics, WorkDayRecord } from "@/src/features/work-days/types";
 
+export type SettingsUpdate = Pick<
+  AppUser,
+  | "dailyWorkingHours"
+  | "theme"
+  | "palette"
+  | "countSaturdayAsExtraHours"
+  | "countSaturdayAsDoubleExtraHours"
+  | "countSundayAsExtraHours"
+  | "countSundayAsDoubleExtraHours"
+>;
+
 type DashboardPayload = {
   days: WorkDayRecord[];
   today: WorkDayRecord | null;
@@ -50,10 +61,10 @@ export function useDashboardData(initialUser: AppUser) {
     }
   }
 
-  async function saveSettings(dailyWorkingHours: number) {
+  async function saveSettings(settings: SettingsUpdate) {
     const updated = await requestJson<AppUser>("/api/settings", {
       method: "PATCH",
-      body: JSON.stringify({ dailyWorkingHours }),
+      body: JSON.stringify(settings),
     });
     setUser(updated);
     await refresh();
